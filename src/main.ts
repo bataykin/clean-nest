@@ -40,7 +40,7 @@ async function bootstrap() {
   // });
   // useContainer(app.select(AppModule), { fallbackOnErrors: true , fallback: true});
   // useContainer(app, { fallback: true });
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // await app.close()
 
