@@ -3,6 +3,7 @@ import { getAuthConfiguration } from '../auth/configuration/authConfiguration';
 import { BlogEntity } from '../bloggers/entities/blogEntity';
 import { TYPEORM_MODULE_OPTIONS } from '@nestjs/typeorm/dist/typeorm.constants';
 import { DeviceEntity } from '../device/entities/device.entity';
+import * as process from 'process';
 
 export const getConfiguration = () => {
   // Hello: this.appService.getHello(),
@@ -36,7 +37,7 @@ export const getConfiguration = () => {
       orm: {
         // datastore: 'postgresql-perpendicular-36302',
         type: 'postgres',
-        host: 'ec2-99-80-170-190.eu-west-1.compute.amazonaws.com',
+        host: process.env.POSTGRES_HOST,
         port: 5432,
         username: 'wwcbeelclztddp',
         password:
