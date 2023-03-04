@@ -34,10 +34,10 @@ async function bootstrap() {
   //
   // useContainer(Container);
   // let validator = Container.get(Validator);
-  // useContainer(app.select(PostsModule), {
-  //   fallbackOnErrors: true,
-  //   fallback: true,
-  // });
+  useContainer(app.select(PostsModule), {
+    fallbackOnErrors: true,
+    fallback: true,
+  });
   // useContainer(app.select(AppModule), { fallbackOnErrors: true , fallback: true});
   // useContainer(app, { fallback: true });
   app.useGlobalFilters(new HttpExceptionFilter());
