@@ -22,7 +22,7 @@ async function bootstrap() {
   // const configService = app.get(ConfigService);
   // app.enableCors();
   // // app.use('trust proxy', LoggerMiddleware);
-  // app.set('trust proxy', 1);
+  app.set('trust proxy', 1);
   //
   // app.use(cookieParser());
   // app.useGlobalPipes(
