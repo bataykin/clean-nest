@@ -14,7 +14,7 @@ import cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT || 3000;
 
-export default async function bootstrap() {
+async function bootstrap() {
   // const url = await ngrok.connect(3000);
   // const url = await ngrok.connect();
 
