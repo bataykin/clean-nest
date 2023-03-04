@@ -11,10 +11,12 @@ import { PostsModule } from './posts/posts.module';
 // const ngrok = require('ngrok');
 
 import cookieParser from 'cookie-parser';
+import * as process from 'process';
 
 const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
+  console.log(process.env.POSTGRES_HOST);
   // const url = await ngrok.connect(3000);
   // const url = await ngrok.connect();
 

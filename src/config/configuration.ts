@@ -4,6 +4,8 @@ import { BlogEntity } from '../bloggers/entities/blogEntity';
 import { TYPEORM_MODULE_OPTIONS } from '@nestjs/typeorm/dist/typeorm.constants';
 import { DeviceEntity } from '../device/entities/device.entity';
 import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
+import { configModule } from './configModule';
 
 export const getConfiguration = () => {
   // Hello: this.appService.getHello(),
@@ -11,6 +13,7 @@ export const getConfiguration = () => {
     ENV: process.env.NODE_ENV,
     DB_TYPE: process.env.REPO_TYPE,
     MONGO_URI: process.env.MONGO_URI,
+    POSTGRES_HOST: process.env.POSTGRES_HOST,
 
     db: {
       mongo: {
