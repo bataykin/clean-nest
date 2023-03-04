@@ -19,30 +19,30 @@ async function bootstrap() {
   // const url = await ngrok.connect();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // const configService = app.get(ConfigService);
-  // app.enableCors();
+  const configService = app.get(ConfigService);
+  app.enableCors();
   // // app.use('trust proxy', LoggerMiddleware);
   app.set('trust proxy', 1);
   //
   // app.use(cookieParser());
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     /*whitelist: true,*/ transform: true,
-  //     stopAtFirstError: false,
-  //   }),
-  // );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      /*whitelist: true,*/ transform: true,
+      stopAtFirstError: false,
+    }),
+  );
   //
-  // // useContainer(Container);
-  // // let validator = Container.get(Validator);
+  // useContainer(Container);
+  // let validator = Container.get(Validator);
   // useContainer(app.select(PostsModule), {
   //   fallbackOnErrors: true,
   //   fallback: true,
   // });
-  // // useContainer(app.select(AppModule), { fallbackOnErrors: true , fallback: true});
-  // // useContainer(app, { fallback: true });
-  // app.useGlobalFilters(new HttpExceptionFilter());
-  //
-  // // await app.close()
+  // useContainer(app.select(AppModule), { fallbackOnErrors: true , fallback: true});
+  // useContainer(app, { fallback: true });
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  // await app.close()
 
   await app.listen(3000);
   // console.log(`Application is running on: ${await app.getUrl()}`);
