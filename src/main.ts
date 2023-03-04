@@ -12,9 +12,9 @@ import { PostsModule } from './posts/posts.module';
 
 import cookieParser from 'cookie-parser';
 
-const PORT = process.env.PORT || 64000;
+const PORT = process.env.PORT || 3000;
 
-async function bootstrap() {
+export default async function bootstrap() {
   // const url = await ngrok.connect(3000);
   // const url = await ngrok.connect();
 
