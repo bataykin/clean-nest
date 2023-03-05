@@ -1,10 +1,10 @@
-import {registerAs} from "@nestjs/config";
+import { registerAs } from '@nestjs/config';
 
-export const getAuthConfiguration =  registerAs ('authorization', () => {
-    return {
-        type: process.env.AUTH_TYPE ?? 'OAUTH2'
-    }
-})
+export const getAuthConfiguration = registerAs('authorization', () => {
+  return {
+    type: process.env.AUTH_TYPE ?? 'OAUTH2',
+  };
+});
 
 // export default registerAs ('authorization', () => {
 //     return {
@@ -12,6 +12,6 @@ export const getAuthConfiguration =  registerAs ('authorization', () => {
 //     }
 // })
 
-
 export type AuthConfigType = {
-    authorization: ReturnType<typeof getAuthConfiguration> }
+  authorization: ReturnType<typeof getAuthConfiguration>;
+};

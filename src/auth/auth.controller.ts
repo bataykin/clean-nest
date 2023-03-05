@@ -97,11 +97,11 @@ export class AuthController {
     // return this.authService.resendRegistrationEmail(email);
   }
 
-  @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @UseGuards(RequestLimitGuard)
   @UsePipes(new ValidationPipe())
+  @Post('login')
   async login(
     @Request() req,
     @Response({ passthrough: true }) res,
