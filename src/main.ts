@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { useContainer } from 'class-validator';
@@ -18,8 +18,8 @@ async function bootstrap() {
   // const url = await ngrok.connect();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: ['error', 'warn', 'verbose', 'debug', 'log'],
     bufferLogs: true,
+    logger: Logger,
   });
   const configService = app.get(ConfigService);
   app.enableCors();
