@@ -21,6 +21,7 @@ export class AuthService {
   ) /*private readonly reftokensRepo: ReftokenORMRepo*/ {}
 
   async validateUser(username: string, password: string) {
+    // console.log('caller is ' + Function.caller);
     const user = await this.usersRepo.findByLogin(username);
     if (!user) {
       this.logger.log('netu takogo logina');

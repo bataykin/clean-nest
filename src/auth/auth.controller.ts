@@ -112,6 +112,7 @@ export class AuthController {
   ) {
     this.logger.log('login started...');
     console.log('login started...');
+    console.log(req.user);
     if (req.user.isBanned) {
       this.logger.log(`user ${req.user?.login} is banned`);
       console.log(`user ${req.user?.login} is banned`);
