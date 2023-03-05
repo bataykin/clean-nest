@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigType, getConfiguration } from './config/configuration';
+import { ConfigType } from './config/configuration';
 import { ConfigService } from '@nestjs/config';
 import { AuthConfigType } from './auth/configuration/authConfiguration';
-import { ICommandHandler } from '@nestjs/cqrs';
 
 @Injectable()
 export class AppService {

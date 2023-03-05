@@ -1,17 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  HttpCode,
-} from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseCoreModule } from '@nestjs/mongoose/dist/mongoose-core.module';
-import mongoose from 'mongoose';
-import { TestingSQLService } from './testing.SQL.service';
+import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { TestingORMService } from './testing.ORM.service';
 
 @Controller('testing')

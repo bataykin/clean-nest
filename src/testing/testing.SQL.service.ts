@@ -1,27 +1,23 @@
-import {Injectable} from '@nestjs/common';
-import {connection, Connection} from "mongoose";
-import {ConfigService} from "@nestjs/config";
-import {InjectConnection} from "@nestjs/mongoose";
-import {type} from "os";
-import {InjectDataSource} from "@nestjs/typeorm";
-import {DataSource} from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { Connection } from 'mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class TestingSQLService {
-    constructor(@InjectConnection() private connection: Connection,
-                @InjectDataSource()
-                private readonly dataSource: DataSource,
-    ) {
-    }
+  constructor(
+    @InjectConnection() private connection: Connection,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {}
 
-    async removeAll() {
+  async removeAll() {
+    await this.connection.db.dropDatabase();
 
-        await this.connection.db.dropDatabase()
+    await this.dataSource.dropDatabase();
 
-        await this.dataSource.dropDatabase()
-
-
-        await this.dataSource.query(`
+    await this.dataSource.query(`
                     
                     
                     CREATE TABLE users (
@@ -38,7 +34,7 @@ export class TestingSQLService {
                     CREATE TABLE bloggers (
                         id                  SERIAL PRIMARY KEY ,    
                         name                varchar(15) UNIQUE NOT NULL,        
-                        "youtubeUrl"        varchar(100) NOT NULL);
+                        "websiteUrl"        varchar(100) NOT NULL);
         
         
         
@@ -126,33 +122,27 @@ export class TestingSQLService {
                             UNIQUE ("userId", "commentId");
         
         
-      `)
+      `);
 
-        // drop table public.posts CASCADE
+    // drop table public.posts CASCADE
+    //
+    // for (let collectionsKey in this.connection.collections) {
+    //   await this.connection.dropCollection(collectionsKey)
+    // }
+    //
+    // await this.connection.dropCollection('users')
+    // await this.connection.dropCollection('requests')
+    // await this.connection.dropCollection('refreshtokens')
+    // await this.connection.dropCollection('bloggers')
+    // await this.connection.dropCollection('posts')
+    // await this.connection.dropCollection('comments')
+    return 'all data deleted...';
+  }
 
+  async removeQuiz() {
+    await this.removeAll();
 
-        // for (let collectionsKey in this.connection.collections) {
-        //   await this.connection.dropCollection(collectionsKey)
-        // }
-
-
-// 
-
-
-        // await this.connection.dropCollection('users')
-        // await this.connection.dropCollection('requests')
-        // await this.connection.dropCollection('refreshtokens')
-        // await this.connection.dropCollection('bloggers')
-        // await this.connection.dropCollection('posts')
-        // await this.connection.dropCollection('comments')
-        return 'delete all data'
-    }
-
-    async removeQuiz() {
-
-        await this.removeAll()
-
-        await this.dataSource.query(`
+    await this.dataSource.query(`
                     
                     CREATE TABLE questions (
                         id                  SERIAL PRIMARY KEY,    
@@ -224,7 +214,7 @@ export class TestingSQLService {
                             FOREIGN KEY ("secondPlayer") 
                             REFERENCES players (id);                        
       
-      `)
-        return 'delete quiz data'
-    }
+      `);
+    return 'delete quiz data';
+  }
 }

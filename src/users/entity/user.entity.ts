@@ -1,11 +1,15 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinColumn} from 'typeorm';
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {LikeStatusEnum} from "../../comments/comment.schema";
-import {date} from "joi";
-import {DeviceEntity} from "../../device/entities/device.entity";
-import {CommentEntity} from "../../comments/entities/comment.entity";
-import {LikeEntity} from "../../likes/entities/like.entity";
-import {BlogEntity} from "../../bloggers/entities/blogEntity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { DeviceEntity } from '../../device/entities/device.entity';
+import { CommentEntity } from '../../comments/entities/comment.entity';
+import { LikeEntity } from '../../likes/entities/like.entity';
+import { BlogEntity } from '../../bloggers/entities/blogEntity';
 
 //
 // @Entity()
@@ -91,77 +95,61 @@ import {BlogEntity} from "../../bloggers/entities/blogEntity";
 //     reactedComments: LikesOnComments[]
 // }
 
-
 ////////////////////////////////////////////////////
-
 
 @Entity('users')
 export class UserEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({default: true})
-    isActive: boolean;
+  @Column({ unique: true })
+  login: string;
 
-    @Column({unique: true})
-    login: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column({unique: true})
-    email: string;
+  @Column({ type: 'uuid' })
+  confirmationCode: string;
 
-    @Column({type: "uuid"})
-    confirmationCode: string;
+  @Column({})
+  passwordHash: string;
 
-    @Column({})
-    passwordHash: string;
+  @Column({ type: 'timestamp', nullable: true })
+  codeExpDate: Date;
 
-    @Column({type: "timestamp", nullable: true})
-    expirationDate: Date;
+  @Column({ type: 'boolean' })
+  isConfirmed: boolean;
 
-    @Column({type: "boolean"})
-    isConfirmed: boolean
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ type: 'uuid', nullable: true })
+  passwordRecoveryCode: string;
 
-    @Column({type: "uuid", nullable: true})
-    passwordRecoveryCode: string
+  @Column({ default: false })
+  isBanned: boolean;
 
-    @Column({default: false})
-    isBanned: boolean
+  @Column({ nullable: true })
+  banReason: string;
 
-    @Column({nullable: true})
-    banReason: string
+  @Column({ type: 'timestamp', nullable: true })
+  banDate: Date;
 
-    @Column({type: "timestamp", nullable: true})
-    banDate: Date;
+  // relations:
 
+  @OneToMany(() => DeviceEntity, (devices) => devices.user)
+  @JoinColumn({ referencedColumnName: 'id' })
+  devices: DeviceEntity[];
 
-    @OneToMany(
-        () => DeviceEntity,
-        (devices) => devices.user)
-    @JoinColumn({referencedColumnName: "id"})
-    devices: DeviceEntity[]
+  @OneToMany(() => CommentEntity, (comments) => comments.user)
+  @JoinColumn([{ /*name: 'commentId',*/ referencedColumnName: 'id' }])
+  comments: CommentEntity[];
 
+  @OneToMany(() => LikeEntity, (l) => l.user)
+  @JoinColumn({ referencedColumnName: 'userId' })
+  likes: LikeEntity[];
 
-    @OneToMany(
-        () => CommentEntity,
-        (comments) => comments.user)
-    @JoinColumn([{/*name: 'commentId',*/ referencedColumnName: 'id'}])
-    comments: CommentEntity[]
-
-
-    @OneToMany(
-        () => LikeEntity,
-        l => l.user
-    )
-    @JoinColumn({referencedColumnName: "userId"})
-    likes: LikeEntity[]
-
-    @OneToMany(
-        () => BlogEntity,
-        (blog) => blog.user
-    )
-    @JoinColumn({referencedColumnName: 'userId'})
-    blogs: BlogEntity[]
+  @OneToMany(() => BlogEntity, (blog) => blog.user)
+  @JoinColumn({ referencedColumnName: 'userId' })
+  blogs: BlogEntity[];
 }

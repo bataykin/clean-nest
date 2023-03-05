@@ -1,47 +1,53 @@
-import {addDays} from "date-fns";
-import { BanUnbanUserDto } from "./dto/BanUnbanUserDto";
-import {CreateUserPaginatedDto} from "./dto/create.user.paginated.dto";
-import {UserEntity} from "./entity/user.entity";
+import { BanUnbanUserDto } from './dto/BanUnbanUserDto';
+import { CreateUserPaginatedDto } from './dto/create.user.paginated.dto';
+import { UserEntity } from './entity/user.entity';
 
-export const IUsersRepoToken = Symbol('IUsersRepoToken')
+export const IUsersRepoToken = Symbol('IUsersRepoToken');
 
 export interface IUsersRepo<GenericUserType> {
-    checkLoginEmailExists(login: string, email: string): Promise<string> | null
+  checkLoginEmailExists(login: string, email: string): Promise<string> | null;
 
-    createUser(login: string, email: string, passwordHash: string, code: string): Promise<GenericUserType>
+  createUser(
+    login: string,
+    email: string,
+    passwordHash: string,
+    code: string,
+  ): Promise<GenericUserType>;
 
-    confirmEmail(code: string)
+  confirmEmail(code: string);
 
-    findById(id: string): Promise<GenericUserType>
+  findById(id: string): Promise<GenericUserType>;
 
-    getUsersPaginated({pageNumber = 1, pageSize = 10}: CreateUserPaginatedDto): Promise<GenericUserType[]>
+  getUsersPaginated({
+    pageNumber = 1,
+    pageSize = 10,
+  }: CreateUserPaginatedDto): Promise<GenericUserType[]>;
 
-    countDocuments(): Promise<number>
+  countDocuments(): Promise<number>;
 
-    countUsersBySearchname(searchLoginTerm: string, searchEmailTerm: string)
+  countUsersBySearchname(searchLoginTerm: string, searchEmailTerm: string);
 
-    deleteUser(id: string)
+  deleteUser(id: string);
 
-    checkCodeExists(code: string): Promise<GenericUserType | null>
+  checkCodeExists(code: string): Promise<GenericUserType | null>;
 
-    findByEmail(email: string): Promise<GenericUserType | null>
+  findByEmail(email: string): Promise<GenericUserType | null>;
 
-    updateConfirmationCode(email: string, code: string)
+  updateConfirmationCode(email: string, code: string);
 
-    findByLogin(username: string): Promise<GenericUserType | null>
+  findByLogin(username: string): Promise<GenericUserType | null>;
 
-    addPasswordRecoveryCode(email: string, passRecoveryCode: string)
+  addPasswordRecoveryCode(email: string, passRecoveryCode: string);
 
-    renewPassword(recoveryCode: string, passwordHash: string)
+  renewPassword(recoveryCode: string, passwordHash: string);
 
+  checkPassRecoveryCodeIsValid(recoveryCode: string);
 
-    checkPassRecoveryCodeIsValid(recoveryCode: string)
+  setBanStatus(userId: string, dto: BanUnbanUserDto);
 
-    setBanStatus(userId: string, dto: BanUnbanUserDto)
+  getBanStatus(userId: string): Promise<boolean>;
 
-    getBanStatus(userId: string) : Promise<Boolean>
+  mapUserEntityToResponse(user: UserEntity);
 
-    mapUserEntityToResponse(user: UserEntity)
-
-    mapArrayOfUserEntitiesToResponse (users: UserEntity[])
+  mapArrayOfUserEntitiesToResponse(users: UserEntity[]);
 }

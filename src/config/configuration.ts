@@ -1,11 +1,6 @@
-import { AppService } from '../app.service';
-import { getAuthConfiguration } from '../auth/configuration/authConfiguration';
 import { BlogEntity } from '../bloggers/entities/blogEntity';
-import { TYPEORM_MODULE_OPTIONS } from '@nestjs/typeorm/dist/typeorm.constants';
 import { DeviceEntity } from '../device/entities/device.entity';
 import * as process from 'process';
-import { ConfigService } from '@nestjs/config';
-import { configModule } from './configModule';
 
 export const getConfiguration = () => {
   // Hello: this.appService.getHello(),
@@ -28,10 +23,9 @@ export const getConfiguration = () => {
         username: 'postgres',
         password: '1984',
         database: 'TestBase',
-        // ssl: {
-        //     rejectUnauthorized: false
-        //
-        // },
+        ssl: {
+          rejectUnauthorized: false,
+        },
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
@@ -65,7 +59,6 @@ export const getConfiguration = () => {
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
     },
-
     // auth: getAuthConfiguration(),
   };
 };

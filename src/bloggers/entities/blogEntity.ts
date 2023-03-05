@@ -1,73 +1,67 @@
-import {Prop} from "@nestjs/mongoose";
 import {
-    AfterInsert, AfterUpdate,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn
-} from "typeorm";
-import {PostEntity} from "../../posts/entities/post.entity";
-import {UserEntity} from "../../users/entity/user.entity";
-import {Expose} from "class-transformer";
-import {BannedUsersEntity} from "./bannedUsersEntity";
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { PostEntity } from '../../posts/entities/post.entity';
+import { UserEntity } from '../../users/entity/user.entity';
+import { BannedUsersEntity } from './bannedUsersEntity';
 
-@Entity({name: 'blogs'} )
+@Entity({ name: 'blogs' })
 export class BlogEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn("uuid")
-    id: string
+  @Column()
+  name: string;
 
-    @Column()
-    name: string;
+  @Column()
+  description: string;
 
-    @Column()
-    youtubeUrl: string;
+  @Column()
+  websiteUrl: string;
 
-    @Column({nullable: true})
-    userId: string;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @Column({nullable: true, default: false})
-    isBanned: boolean
+  @Column({ default: false })
+  isMembership: boolean;
 
-    @Column({ type: 'timestamptz', nullable: true})
-    banDate: Date
+  //additional fields
 
-    @ManyToOne(
-        () => UserEntity,
-        (user) => user.blogs
-    )
-    user: UserEntity
+  @Column({ nullable: true })
+  userId: string;
 
+  @Column({ nullable: true, default: false })
+  isBanned: boolean;
 
-    @OneToMany(
-        () => PostEntity,
-        (post) => post.blogger)
-    @JoinColumn({referencedColumnName: 'blogId',})
-    posts: PostEntity[];
+  @Column({ type: 'timestamptz', nullable: true })
+  banDate: Date;
 
-    @OneToMany(
-        () => BannedUsersEntity,
-        (bannedUser) => bannedUser.blog)
-    @JoinColumn({referencedColumnName: 'blogId'})
-    bannedUsers: BannedUsersEntity[];
+  //relations
 
+  @ManyToOne(() => UserEntity, (user) => user.blogs)
+  user: UserEntity;
 
+  @OneToMany(() => PostEntity, (post) => post.blogger)
+  @JoinColumn({ referencedColumnName: 'blogId' })
+  posts: PostEntity[];
 
-    @CreateDateColumn()
-    createdAt: Date
+  @OneToMany(() => BannedUsersEntity, (bannedUser) => bannedUser.blog)
+  @JoinColumn({ referencedColumnName: 'blogId' })
+  bannedUsers: BannedUsersEntity[];
 
-    // @AfterInsert()
-    // @AfterUpdate()
-    // get blogOwnerInfo(): any {
-    //     console.log('blogOwnerInfo ', this.user)
-    //     return {
-    //         userId: this.user?.id,
-    //         userLogin: this.user?.login
-    //     }
-    // }
-
-
+  // @AfterInsert()
+  // @AfterUpdate()
+  // get blogOwnerInfo(): any {
+  //     console.log('blogOwnerInfo ', this.user)
+  //     return {
+  //         userId: this.user?.id,
+  //         userLogin: this.user?.login
+  //     }
+  // }
 }

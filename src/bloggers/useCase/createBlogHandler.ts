@@ -1,44 +1,46 @@
-import {CommandBus, CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {CreateBloggerDto} from "../dto/create.blogger.dto";
-import {BadRequestException, Inject, UnauthorizedException} from "@nestjs/common";
-import {IBlogsRepo, IBlogsRepoToken} from "../IBlogsRepo";
-import {BlogEntity} from "../entities/blogEntity";
-import {isEmpty, isUUID} from "class-validator";
-import {UserEntity} from "../../users/entity/user.entity";
-import {AuthService} from "../../auth/authService";
-import {IUsersRepo, IUsersRepoToken} from "../../users/IUsersRepo";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CreateBloggerDto } from '../dto/create.blogger.dto';
+import { Inject, UnauthorizedException } from '@nestjs/common';
+import { IBlogsRepo, IBlogsRepoToken } from '../IBlogsRepo';
+import { BlogEntity } from '../entities/blogEntity';
+import { UserEntity } from '../../users/entity/user.entity';
+import { AuthService } from '../../auth/authService';
+import { IUsersRepo, IUsersRepoToken } from '../../users/IUsersRepo';
 
 export class CreateBlogCommand {
-    constructor(public readonly dto: CreateBloggerDto,
-                public readonly accessToken: string) {
-    }
+  constructor(
+    public readonly dto: CreateBloggerDto,
+    public readonly accessToken: string,
+  ) {}
 }
 
 @CommandHandler(CreateBlogCommand)
 export class CreateBlogHandler implements ICommandHandler<CreateBlogCommand> {
-    constructor(@Inject(IBlogsRepoToken)
-                private readonly blogsRepo: IBlogsRepo<BlogEntity>,
-                @Inject(IUsersRepoToken)
-                private readonly usersRepo: IUsersRepo<UserEntity>,
-                private readonly authService: AuthService) {
-    }
+  constructor(
+    @Inject(IBlogsRepoToken)
+    private readonly blogsRepo: IBlogsRepo<BlogEntity>,
+    @Inject(IUsersRepoToken)
+    private readonly usersRepo: IUsersRepo<UserEntity>,
+    private readonly authService: AuthService,
+  ) {}
 
-    async execute(command: CreateBlogCommand): Promise<any> {
-        const {dto, accessToken} = command
-        const retrievedUserFromToken =
-            (accessToken) ? await this.authService.retrieveUser(accessToken) : undefined
-        const userIdFromToken = (retrievedUserFromToken) ? retrievedUserFromToken.userId : undefined
-        const isBanned = await this.usersRepo.getBanStatus(userIdFromToken)
-        if (isBanned) throw new UnauthorizedException('user is banned, sorry))')
-        // console.log(userIdFromToken, ' userId')
-        // const isExists = await this.blogsRepo.isBlogExistsByName(command.dto)
-        // if (isExists) {
-        //     throw new BadRequestException('Takoi blog name exists')
-        // }
+  async execute(command: CreateBlogCommand): Promise<any> {
+    const { dto, accessToken } = command;
+    const retrievedUserFromToken = await this.authService.retrieveUser(
+      accessToken,
+    );
+    const userIdFromToken = retrievedUserFromToken.userId;
+    const isUserBanned = await this.usersRepo.getBanStatus(userIdFromToken);
+    if (isUserBanned)
+      throw new UnauthorizedException('user is banned, sorry))');
+    // console.log(userIdFromToken, ' userId')
+    // const isExists = await this.blogsRepo.isBlogExistsByName(command.dto)
+    // if (isExists) {
+    //     throw new BadRequestException('Takoi blog name exists')
+    // }
 
-        const blog =  await this.blogsRepo.createBlog(command.dto, userIdFromToken)
-        const {/*createdAt,*/ userId, ...rest} = blog
-        return rest
-    }
-
+    const blog = await this.blogsRepo.createBlog(dto, userIdFromToken);
+    const { /*createdAt,*/ userId, isBanned, banDate, ...rest } = blog;
+    return rest;
+  }
 }

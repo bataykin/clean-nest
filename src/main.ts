@@ -7,16 +7,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { useContainer } from 'class-validator';
 import { PostsModule } from './posts/posts.module';
-
-// const ngrok = require('ngrok');
-
 import cookieParser from 'cookie-parser';
 import * as process from 'process';
 
-const PORT = process.env.PORT || 3000;
+// const ngrok = require('ngrok');
 
+const PORT = process.env.PORT || 3000;
 async function bootstrap() {
-  console.log(process.env.POSTGRES_HOST);
   // const url = await ngrok.connect(3000);
   // const url = await ngrok.connect();
 
@@ -58,7 +55,7 @@ async function bootstrap() {
       : configService.get('db.orm').database,
   );
 
-  console.log('NODE_ENV=', configService.get('NODE_ENV'));
+  console.log('NODE_ENV = ', configService.get('NODE_ENV'));
 
   // console.log(url)
 
@@ -77,7 +74,6 @@ async function bootstrap() {
   // }).catch(function (error) {
   //     console.error(error);
   // });
-
   // let db = configService.get('db.orm');
   // console.log(db)
   // console.log(useConfigDB())

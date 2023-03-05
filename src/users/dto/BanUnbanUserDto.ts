@@ -1,11 +1,10 @@
-import {IsBoolean, IsString, Length} from "class-validator";
+import { IsBoolean, IsString, Length } from 'class-validator';
 
 export class BanUnbanUserDto {
-    @IsBoolean()
-    isBanned: boolean
+  @IsBoolean()
+  isBanned: boolean;
 
-    @IsString()
-    @Length(20)
-    banReason: string
-
+  @IsString()
+  @Length(20)
+  banReason: string;
 }
