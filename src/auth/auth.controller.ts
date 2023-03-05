@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Ip,
+  Logger,
   ParseUUIDPipe,
   Post,
   Request,
@@ -39,6 +40,7 @@ export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly logger: Logger,
   ) {}
 
   @HttpCode(204)
@@ -108,8 +110,10 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Ip() ip,
   ) {
+    this.logger.log('login started...');
     console.log('login started...');
     if (req.user.isBanned) {
+      this.logger.log(`user ${req.user?.login} is banned`);
       console.log(`user ${req.user?.login} is banned`);
       throw new UnauthorizedException(
         `user ${req.user?.login} is banned, reason: ${req.user?.banReason}`,

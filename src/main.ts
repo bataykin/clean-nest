@@ -17,7 +17,10 @@ async function bootstrap() {
   // const url = await ngrok.connect(3000);
   // const url = await ngrok.connect();
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['error', 'warn', 'verbose', 'debug', 'log'],
+    bufferLogs: true,
+  });
   const configService = app.get(ConfigService);
   app.enableCors();
   // // app.use('trust proxy', LoggerMiddleware);

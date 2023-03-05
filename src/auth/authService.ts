@@ -1,4 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { IUsersRepo, IUsersRepoToken } from '../users/IUsersRepo';
 import { UserEntity } from '../users/entity/user.entity';
 import { jwtConstants } from './constants';
@@ -12,16 +17,21 @@ export class AuthService {
   constructor(
     @Inject(IUsersRepoToken) private readonly usersRepo: IUsersRepo<UserEntity>,
     private readonly jwtService: JwtService,
+    private readonly logger: Logger,
   ) /*private readonly reftokensRepo: ReftokenORMRepo*/ {}
 
   async validateUser(username: string, password: string) {
     const user = await this.usersRepo.findByLogin(username);
     if (!user) {
+      this.logger.log('netu takogo logina');
+
       console.log('netu takogo logina');
       throw new UnauthorizedException('netu takogo logina');
     }
     const isEqual = await bcrypt.compare(password, user['passwordHash']);
     if (!isEqual) {
+      this.logger.log('parol ne podhodit');
+
       console.log('parol ne podhodit');
       throw new UnauthorizedException('parol ne podhodit');
     }

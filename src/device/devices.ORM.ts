@@ -20,7 +20,6 @@ export class DevicesORM
   }
 
   async updateActiveDateByDeviceId(deviceId: string) {
-    console.log(deviceId);
     const renewedToken = await this.devicesRepo.update(
       { deviceId: deviceId },
       { lastActiveDate: new Date() },
