@@ -99,7 +99,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  @UseGuards(RequestLimitGuard)
+  // @UseGuards(RequestLimitGuard)
   @UsePipes(new ValidationPipe())
   @Post('login')
   async login(
@@ -108,6 +108,7 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Ip() ip,
   ) {
+    console.log('login started...');
     if (req.user.isBanned) {
       console.log(`user ${req.user?.login} is banned`);
       throw new UnauthorizedException(
