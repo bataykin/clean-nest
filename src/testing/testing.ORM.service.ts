@@ -12,7 +12,6 @@ export class TestingORMService {
     await this.dataSource.dropDatabase();
     await this.dataSource.destroy();
     await this.dataSource.initialize();
-    console.log('delete all');
     return 1;
 
     // const options = await this.dataSource.options

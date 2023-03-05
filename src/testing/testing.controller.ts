@@ -1,6 +1,8 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { TestingORMService } from './testing.ORM.service';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('testing')
 export class TestingController {
   constructor(

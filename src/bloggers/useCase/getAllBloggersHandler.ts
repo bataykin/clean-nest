@@ -44,7 +44,7 @@ export class GetAllBloggersHandler
       sortBy = 'createdAt',
       sortDirection = 'desc',
       skipSize = +pageNumber > 1 ? +pageSize * (+pageNumber - 1) : 0,
-    } = query.dto;
+    } = dto;
     const blogsPaginationBLLdto = {
       searchNameTerm,
       pageNumber,
@@ -64,7 +64,9 @@ export class GetAllBloggersHandler
       blogs,
       'id',
       'name',
+      'description',
       'websiteUrl',
+      'isMembership',
       'createdAt',
     );
     const docCount = await this.blogsRepo.countUsersBlogsBySearchname(

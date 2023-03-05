@@ -109,6 +109,7 @@ export class AuthController {
     @Ip() ip,
   ) {
     if (req.user.isBanned) {
+      console.log(`user ${req.user?.login} is banned`);
       throw new UnauthorizedException(
         `user ${req.user?.login} is banned, reason: ${req.user?.banReason}`,
       );
