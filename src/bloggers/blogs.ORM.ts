@@ -68,6 +68,44 @@ export class BlogsORM
     }
   }
 
+  async SA_getBlogsPaginated(dto: BlogsPaginationDto): Promise<BlogEntity[]> {
+    dto.searchNameTerm = dto.searchNameTerm == null ? '' : dto.searchNameTerm;
+    if (dto.sortBy === 'createdAt') {
+      const blogs = await this.blogsRepo
+        .createQueryBuilder('blogs')
+        .where('LOWER(blogs.name) like LOWER(:name)', {
+          name: `%${dto.searchNameTerm}%`,
+        })
+        .skip(dto.skipSize)
+        .take(dto.pageSize)
+        .orderBy(
+          'blogs.' + dto.sortBy,
+          // + ' COLLATE "C"'
+          /*+ '::bytea'*/
+          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        )
+        .getMany();
+      return blogs;
+    } else {
+      const blogs = await this.blogsRepo
+        .createQueryBuilder('blogs')
+        .where('LOWER(blogs.name) like LOWER(:name)', {
+          name: `%${dto.searchNameTerm}%`,
+        })
+        .skip(dto.skipSize)
+        .take(dto.pageSize)
+        .orderBy(
+          'blogs.' + dto.sortBy + ' COLLATE "C"',
+          /*+ '::bytea'*/
+          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        )
+        .getMany();
+      return blogs;
+    }
+  }
+
   async getBlogsPaginated(dto: BlogsPaginationDto): Promise<BlogEntity[]> {
     // according to swagger default value of searchNameTerm is null, but its not working so
     dto.searchNameTerm = dto.searchNameTerm == null ? '' : dto.searchNameTerm;
@@ -95,6 +133,7 @@ export class BlogsORM
         .where('LOWER(blogs.name) like LOWER(:name)', {
           name: `%${dto.searchNameTerm}%`,
         })
+        .andWhere({ isBanned: false })
         .skip(dto.skipSize)
         .take(dto.pageSize)
         .orderBy(
@@ -151,6 +190,13 @@ export class BlogsORM
       .createQueryBuilder('b')
       .where('LOWER(b.name) like LOWER(:name)', { name: `%${searchNameTerm}%` })
       .andWhere({ isBanned: false })
+      .getCount();
+  }
+
+  async SA_countBlogsBySearchname(searchNameTerm: string) {
+    return await this.blogsRepo
+      .createQueryBuilder('b')
+      .where('LOWER(b.name) like LOWER(:name)', { name: `%${searchNameTerm}%` })
       .getCount();
   }
 

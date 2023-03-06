@@ -35,11 +35,13 @@ export class SAGetAllBloggersHandler
       sortDirection,
       skipSize,
     };
-    const blogs = await this.blogsRepo.getBlogsPaginated(blogsPaginationBLLdto);
+    const blogs = await this.blogsRepo.SA_getBlogsPaginated(
+      blogsPaginationBLLdto,
+    );
     const mappedBlogs = await this.blogsRepo.mapBlogsWithOwnersToResponse(
       blogs,
     );
-    const docCount = await this.blogsRepo.countBlogsBySearchname(
+    const docCount = await this.blogsRepo.SA_countBlogsBySearchname(
       searchNameTerm,
     );
     const result = {

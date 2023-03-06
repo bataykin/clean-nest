@@ -43,4 +43,10 @@ export interface IBlogsRepo<GenericBlogType> {
   mapBlogsWithOwnersToResponse(blogs: BlogEntity[]);
 
   setBanStatus(blogId: string, isBanned: boolean): void;
+
+  SA_getBlogsPaginated(
+    dto: BlogsPaginationDto,
+  ): Promise<GenericBlogType[] | null>;
+
+  SA_countBlogsBySearchname(searchNameTerm: string);
 }
