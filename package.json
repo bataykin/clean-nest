@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \\\\\\\"src/**/*.ts\\\\\\\" \\\\\\\"test/**/*.ts\\\\\\\"",
-    "start": "set NODE_ENV=development && node public/main.js",
+    "start": "set NODE_ENV=development && node public/src/main.js",
     "start-orig": "set NODE_ENV=development && nest start",
     "start:dev": "nest start --watch",
     "start:debug": "set NODE_ENV=DEV && nest start --debug --watch ",
