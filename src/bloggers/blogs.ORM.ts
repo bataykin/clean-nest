@@ -268,6 +268,7 @@ export class BlogsORM
         description: blog.description,
         websiteUrl: blog.websiteUrl,
         createdAt: blog.createdAt,
+        isMembership: blog.isMembership,
         blogOwnerInfo: {
           userId: blog.userId,
           userLogin: user.user_login,
