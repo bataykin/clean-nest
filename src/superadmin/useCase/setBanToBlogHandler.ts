@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { IBlogsRepo, IBlogsRepoToken } from '../../bloggers/IBlogsRepo';
 import { BlogEntity } from '../../bloggers/entities/blogEntity';
 
@@ -20,6 +20,10 @@ export class SetBanToBlogHandler
   ) {}
   async execute(command: SA_SetBanToBlogCommand): Promise<any> {
     const { blogId, isBanned } = command;
+    const blogExist = await this.blogsRepo.findBlogById(blogId);
+    if (!blogExist) {
+      throw new NotFoundException(`blogId ${blogId} not found`);
+    }
     await this.blogsRepo.setBanStatus(blogId, isBanned);
   }
 }

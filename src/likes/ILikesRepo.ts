@@ -1,34 +1,37 @@
-import {LikeStatusEnum} from "../comments/comment.schema";
-import {LikeEntity} from "./entities/like.entity";
-import {PostEntity} from "../posts/entities/post.entity";
-import {CommentEntity} from "../comments/entities/comment.entity";
+import { LikeStatusEnum } from '../comments/comment.schema';
+import { PostEntity } from '../posts/entities/post.entity';
+import { CommentEntity } from '../comments/entities/comment.entity';
 
-export const ILikesRepoToken = Symbol('ILikesRepoToken')
+export const ILikesRepoToken = Symbol('ILikesRepoToken');
 
 export interface ILikesRepo<GenericRepoType> {
-    addReactionToComment(userId: string, commentId: string, likeStatus: LikeStatusEnum)
+  addReactionToComment(
+    userId: string,
+    commentId: string,
+    likeStatus: LikeStatusEnum,
+  );
 
-    addReactionToPost(userId: string, postId: string, likeStatus: LikeStatusEnum)
+  addReactionToPost(userId: string, postId: string, likeStatus: LikeStatusEnum);
 
-    getCommentLikeStatus(userId: string, commentId: string)
+  getCommentLikeStatus(userId: string, commentId: string);
 
-    getPostLikeStatus(userId: string, postId: string)
+  getPostLikeStatus(userId: string, postId: string);
 
-    getUserLikeStatusPost(userId: string, postId: string)
+  getUserLikeStatusPost(userId: string, postId: string);
 
-    getUserLikeStatusComment(userId: string, commentId: string)
+  getUserLikeStatusComment(userId: string, commentId: string);
 
-    getCommentLikeDislikeCounts(id: string)
+  getCommentLikeDislikeCounts(id: string);
 
-    getPostLikeDislikeCounts(postId: string)
+  getPostLikeDislikeCounts(postId: string);
 
-    getLastLikesOnPost(postId: string)
+  getLastLikesOnPost(postId: string);
 
-    mapLikesToPostEntityToResponse(post: PostEntity, userId: string)
+  mapLikesToPostEntityToResponse(post: PostEntity, userId?: string);
 
-    mapArrayPostEntitiesToResponse(posts: PostEntity[], userId?: string)
+  mapArrayPostEntitiesToResponse(posts: PostEntity[], userId?: string);
 
-    mapLikesToCommentEntityToResponse (comment: CommentEntity, userId: string)
+  mapLikesToCommentEntityToResponse(comment: CommentEntity, userId: string);
 
-    mapArrayCommentEntitiesToResponse (comments: CommentEntity[], userId?: string)
+  mapArrayCommentEntitiesToResponse(comments: CommentEntity[], userId?: string);
 }
