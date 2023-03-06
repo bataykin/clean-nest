@@ -169,6 +169,9 @@ export class BlogsORM
     return await this.blogsRepo.findOneBy({ id, isBanned: false });
   }
 
+  async SA_findBlogById(id: string): Promise<BlogEntity | null> {
+    return await this.blogsRepo.findOneBy({ id });
+  }
   async getBlogNameById(id: string): Promise<string> {
     const blogger = await this.blogsRepo.findOneBy({ id });
     return blogger.name;

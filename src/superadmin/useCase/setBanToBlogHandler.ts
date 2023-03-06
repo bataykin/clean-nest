@@ -20,7 +20,7 @@ export class SetBanToBlogHandler
   ) {}
   async execute(command: SA_SetBanToBlogCommand): Promise<any> {
     const { blogId, isBanned } = command;
-    const blogExist = await this.blogsRepo.findBlogById(blogId);
+    const blogExist = await this.blogsRepo.SA_findBlogById(blogId);
     if (!blogExist) {
       throw new NotFoundException(`blogId ${blogId} not found`);
     }

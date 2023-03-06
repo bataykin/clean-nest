@@ -12,7 +12,9 @@ export interface IBlogsRepo<GenericBlogType> {
 
   deleteBlog(id: string): Promise<any>;
 
-  findBlogById(id: string): Promise<GenericBlogType>;
+  findBlogById(id: string): Promise<GenericBlogType | null>;
+
+  SA_findBlogById(id: string): Promise<GenericBlogType | null>;
 
   countBlogs(): Promise<number>;
 
