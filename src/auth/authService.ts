@@ -21,19 +21,12 @@ export class AuthService {
   ) /*private readonly reftokensRepo: ReftokenORMRepo*/ {}
 
   async validateUser(username: string, password: string) {
-    // console.log('caller is ' + Function.caller);
-    const user = await this.usersRepo.findByLogin(username);
+    const user = await this.usersRepo.findByLoginOrEmail(username);
     if (!user) {
-      this.logger.log('netu takogo logina');
-
-      console.log('netu takogo logina');
       throw new UnauthorizedException('netu takogo logina');
     }
     const isEqual = await bcrypt.compare(password, user['passwordHash']);
     if (!isEqual) {
-      this.logger.log('parol ne podhodit');
-
-      console.log('parol ne podhodit');
       throw new UnauthorizedException('parol ne podhodit');
     }
     return user;

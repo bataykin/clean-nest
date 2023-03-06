@@ -18,6 +18,7 @@ async function bootstrap() {
   // const url = await ngrok.connect();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['warn', 'error', 'verbose', 'debug'],
     bufferLogs: true,
   });
   const configService = app.get(ConfigService);

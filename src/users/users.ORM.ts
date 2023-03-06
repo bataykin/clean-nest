@@ -95,8 +95,11 @@ export class UsersORM
     return await this.usersRepo.findOneBy({ id });
   }
 
-  async findByLogin(username: string): Promise<UserEntity | null> {
-    const user = await this.usersRepo.findOneBy({ login: username });
+  async findByLoginOrEmail(username: string): Promise<UserEntity | null> {
+    const user = await this.usersRepo.findOneBy([
+      { login: username },
+      { email: username },
+    ]);
     if (!user) {
       return null;
     } else {

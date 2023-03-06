@@ -35,7 +35,7 @@ export interface IUsersRepo<GenericUserType> {
 
   updateConfirmationCode(email: string, code: string);
 
-  findByLogin(username: string): Promise<GenericUserType | null>;
+  findByLoginOrEmail(username: string): Promise<GenericUserType | null>;
 
   addPasswordRecoveryCode(email: string, passRecoveryCode: string);
 

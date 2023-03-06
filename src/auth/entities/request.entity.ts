@@ -1,21 +1,19 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
-import {RequestORM} from "../request.ORM";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('requests')
 export class RequestEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    ip: string
+  @Column()
+  ip: string;
 
-    @Column()
-    reqDate: Date
+  @Column()
+  reqDate: Date;
 
-    @Column()
-    endPoint: string
+  @Column()
+  endPoint: string;
 
-    @Column({nullable: true})
-    login: string
-
+  @Column({ nullable: true })
+  login: string;
 }

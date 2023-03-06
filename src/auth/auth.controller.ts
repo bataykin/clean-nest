@@ -110,12 +110,7 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Ip() ip,
   ) {
-    this.logger.log('login started...');
-    console.log('login started...');
-    console.log(req.user);
     if (req.user.isBanned) {
-      this.logger.log(`user ${req.user?.login} is banned`);
-      console.log(`user ${req.user?.login} is banned`);
       throw new UnauthorizedException(
         `user ${req.user?.login} is banned, reason: ${req.user?.banReason}`,
       );

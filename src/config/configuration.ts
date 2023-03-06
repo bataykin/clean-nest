@@ -36,17 +36,17 @@ export const getConfiguration = () => {
         type: 'postgres',
         host: process.env.POSTGRES_HOST,
         port: 5432,
-        username: 'wwcbeelclztddp',
+        username: 'pcczftgtqzmswy',
         password:
-          'ccb0fd68cff34e8ba8d47ff32f0debfdb634071eeabe3e4d1f7d58fcfaec2de7',
-        database: 'd6iat8dcidb74a',
+          '649ce68a3f44da48fc46b6f4140394500ff4b5c14ae7554ccd10a2134300fd25',
+        database: 'd5h25idgo0jfol',
         ssl: {
           rejectUnauthorized: false,
         },
         autoLoadEntities: true,
         synchronize: true,
         entities: [BlogEntity, DeviceEntity],
-        logging: false,
+        logging: true,
 
         migrations: [
           /*...*/
