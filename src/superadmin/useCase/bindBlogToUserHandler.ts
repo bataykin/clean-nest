@@ -18,7 +18,7 @@ export class BindBlogToUserHandler
   async execute(command: SA_BindBlogToUserCommand): Promise<any> {
     const { userId, id } = command;
     // console.log('blogId is ', id, ' userId is ', userId)
-    await this.blogsRepo.bindBlogToUser(id, userId);
+    await this.blogsRepo.SA_bindBlogToUser(id, userId);
     return Promise.resolve('implement BindBlogToUserCommand');
   }
 }

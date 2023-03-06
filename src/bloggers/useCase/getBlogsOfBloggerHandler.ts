@@ -7,16 +7,16 @@ import { AuthService } from '../../auth/authService';
 import { IUsersRepo, IUsersRepoToken } from '../../users/IUsersRepo';
 import { UserEntity } from '../../users/entity/user.entity';
 
-export class GetAllBlogsCommand {
+export class GetBlogsOfBloggerQuery {
   constructor(
     public readonly dto: BlogsPaginationDto,
     public readonly accessToken: string,
   ) {}
 }
 
-@QueryHandler(GetAllBlogsCommand)
-export class GetAllBloggersHandler
-  implements IQueryHandler<GetAllBlogsCommand>
+@QueryHandler(GetBlogsOfBloggerQuery)
+export class GetBlogsOfBloggerHandler
+  implements IQueryHandler<GetBlogsOfBloggerQuery>
 {
   constructor(
     @Inject(IBlogsRepoToken)
@@ -26,17 +26,16 @@ export class GetAllBloggersHandler
     private readonly usersRepo: IUsersRepo<UserEntity>,
   ) {}
 
-  async execute(query: GetAllBlogsCommand): Promise<any> {
+  async execute(query: GetBlogsOfBloggerQuery): Promise<any> {
     const { dto, accessToken } = query;
-    const retrievedUserFromToken = accessToken
-      ? await this.authService.retrieveUser(accessToken)
-      : undefined;
-    const userIdFromToken = retrievedUserFromToken
-      ? retrievedUserFromToken.userId
-      : undefined;
-    const isBanned = await this.usersRepo.getBanStatus(userIdFromToken);
-    if (isBanned) throw new UnauthorizedException('user is banned, sorry))');
-
+    const retrievedUserFromToken = await this.authService.retrieveUser(
+      accessToken,
+    );
+    const userIdFromToken = retrievedUserFromToken.userId;
+    const isUserExist = await this.usersRepo.findById(userIdFromToken);
+    if (!isUserExist) {
+      throw new UnauthorizedException('unexpected user');
+    }
     const {
       searchNameTerm = '',
       pageNumber = 1,
@@ -54,7 +53,7 @@ export class GetAllBloggersHandler
       skipSize,
     };
 
-    const blogs = await this.blogsRepo.getUsersBlogsPaginated(
+    const blogs = await this.blogsRepo.getBlogsPaginated(
       blogsPaginationBLLdto,
       userIdFromToken,
     );

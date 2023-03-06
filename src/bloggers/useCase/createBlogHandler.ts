@@ -30,10 +30,14 @@ export class CreateBlogHandler implements ICommandHandler<CreateBlogCommand> {
       accessToken,
     );
     const userIdFromToken = retrievedUserFromToken.userId;
+    const isUserExist = await this.usersRepo.findById(userIdFromToken);
+    if (!isUserExist) {
+      throw new UnauthorizedException('unexpected user');
+    }
     const isUserBanned = await this.usersRepo.getBanStatus(userIdFromToken);
     if (isUserBanned)
       throw new UnauthorizedException('user is banned, sorry))');
-    // console.log(userIdFromToken, ' userId')
+
     // const isExists = await this.blogsRepo.isBlogExistsByName(command.dto)
     // if (isExists) {
     //     throw new BadRequestException('Takoi blog name exists')

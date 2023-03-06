@@ -38,7 +38,7 @@ export class AuthService {
         secret: jwtConstants.secret,
       });
       if (!user) {
-        throw new UnauthorizedException('user protyX');
+        throw new UnauthorizedException('token protyX');
       }
       return user;
     } catch (e) {

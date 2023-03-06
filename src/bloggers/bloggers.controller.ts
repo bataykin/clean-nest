@@ -20,7 +20,7 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { BlogsPaginationDto } from './dto/blogsPaginationDto';
 import { CreatPostByBlogDto } from './dto/creatPostByBlogDto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { GetAllBlogsCommand } from './useCase/getAllBloggersHandler';
+import { GetBlogsOfBloggerQuery } from './useCase/getBlogsOfBloggerHandler';
 import { CreateBlogCommand } from './useCase/createBlogHandler';
 import { RemoveBlogCommand } from './useCase/removeBlogHandler';
 import { UpdateBlogCommand } from './useCase/updateBlogHandler';
@@ -146,7 +146,7 @@ export class BloggersController {
   @HttpCode(200)
   async getMyBlogs(@Query() dto: BlogsPaginationDto, @Request() req) {
     const accessToken = req.headers.authorization?.split(' ')[1];
-    return this.queryBus.execute(new GetAllBlogsCommand(dto, accessToken));
+    return this.queryBus.execute(new GetBlogsOfBloggerQuery(dto, accessToken));
   }
 
   @Put('users/:id/ban')

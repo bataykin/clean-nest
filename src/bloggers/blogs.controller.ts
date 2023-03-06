@@ -7,11 +7,11 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import { GetPostsByBlogCommand } from './useCase/getPostsByBlogHandler';
+import { GetPostsByBlogQuery } from './useCase/getPostsByBlogHandler';
 import { BlogsPaginationDto } from './dto/blogsPaginationDto';
-import { FindBlogCommand } from './useCase/findBlogHandler';
+import { FindBlogQuery } from './useCase/findBlogHandler';
 import { QueryBus } from '@nestjs/cqrs';
-import { SA_GetAllBlogsQuery } from '../superadmin/useCase/SAGetAllBloggersHandler';
+import { GetAllBlogsQuery } from './useCase/getAllBlogsPublic';
 
 @Controller('blogs')
 export class BlogsController {
@@ -23,7 +23,7 @@ export class BlogsController {
     /*@Param('id', ParseUUIDPipe) id: string,*/
     @Query() dto: BlogsPaginationDto,
   ) {
-    return this.queryBus.execute(new SA_GetAllBlogsQuery(dto));
+    return this.queryBus.execute(new GetAllBlogsQuery(dto));
   }
 
   @Get(':blogId/posts')
@@ -31,12 +31,12 @@ export class BlogsController {
     @Param('blogId', ParseUUIDPipe) bloggerId: string,
     @Query() dto: BlogsPaginationDto,
   ) {
-    return this.queryBus.execute(new GetPostsByBlogCommand(bloggerId, dto));
+    return this.queryBus.execute(new GetPostsByBlogQuery(bloggerId, dto));
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findBlog(@Param('id', ParseUUIDPipe) id: string) {
-    return this.queryBus.execute(new FindBlogCommand(id));
+    return this.queryBus.execute(new FindBlogQuery(id));
   }
 }

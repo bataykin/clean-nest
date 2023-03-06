@@ -33,10 +33,10 @@ export class BlogEntity {
 
   //additional fields
 
-  @Column({ nullable: true })
+  @Column({ type: 'uuid', nullable: false })
   userId: string;
 
-  @Column({ nullable: true, default: false })
+  @Column({ default: false })
   isBanned: boolean;
 
   @Column({ type: 'timestamptz', nullable: true })

@@ -24,7 +24,7 @@ export class BlogsORM
     );
   }
 
-  async getUsersBlogsPaginated(
+  async getBlogsOfBloggerPaginated(
     dto: BlogsPaginationDto,
     userIdFromToken: string,
   ): Promise<BlogEntity[]> {
@@ -54,6 +54,47 @@ export class BlogsORM
           name: `%${dto.searchNameTerm}%`,
         })
         .andWhere('blogs.userId = :userId', { userId: userIdFromToken })
+        .andWhere({ isBanned: false })
+        .skip(dto.skipSize)
+        .take(dto.pageSize)
+        .orderBy(
+          'blogs.' + dto.sortBy + ' COLLATE "C"',
+          /*+ '::bytea'*/
+          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        )
+        .getMany();
+      return blogs;
+    }
+  }
+
+  async getBlogsPaginated(dto: BlogsPaginationDto): Promise<BlogEntity[]> {
+    // according to swagger default value of searchNameTerm is null, but its not working so
+    dto.searchNameTerm = dto.searchNameTerm == null ? '' : dto.searchNameTerm;
+    if (dto.sortBy === 'createdAt') {
+      const blogs = await this.blogsRepo
+        .createQueryBuilder('blogs')
+        .where('LOWER(blogs.name) like LOWER(:name)', {
+          name: `%${dto.searchNameTerm}%`,
+        })
+        .andWhere({ isBanned: false })
+        .skip(dto.skipSize)
+        .take(dto.pageSize)
+        .orderBy(
+          'blogs.' + dto.sortBy,
+          // + ' COLLATE "C"'
+          /*+ '::bytea'*/
+          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        )
+        .getMany();
+      return blogs;
+    } else {
+      const blogs = await this.blogsRepo
+        .createQueryBuilder('blogs')
+        .where('LOWER(blogs.name) like LOWER(:name)', {
+          name: `%${dto.searchNameTerm}%`,
+        })
         .skip(dto.skipSize)
         .take(dto.pageSize)
         .orderBy(
@@ -94,45 +135,6 @@ export class BlogsORM
     return blogger.name;
   }
 
-  async getBlogsPaginated(dto: BlogsPaginationDto): Promise<BlogEntity[]> {
-    // according to swagger default value of searchNameTerm is null, but its not working so
-    dto.searchNameTerm = dto.searchNameTerm == null ? '' : dto.searchNameTerm;
-    if (dto.sortBy === 'createdAt') {
-      const blogs = await this.blogsRepo
-        .createQueryBuilder('blogs')
-        .where('LOWER(blogs.name) like LOWER(:name)', {
-          name: `%${dto.searchNameTerm}%`,
-        })
-        .skip(dto.skipSize)
-        .take(dto.pageSize)
-        .orderBy(
-          'blogs.' + dto.sortBy,
-          // + ' COLLATE "C"'
-          /*+ '::bytea'*/
-          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
-          'NULLS LAST',
-        )
-        .getMany();
-      return blogs;
-    } else {
-      const blogs = await this.blogsRepo
-        .createQueryBuilder('blogs')
-        .where('LOWER(blogs.name) like LOWER(:name)', {
-          name: `%${dto.searchNameTerm}%`,
-        })
-        .skip(dto.skipSize)
-        .take(dto.pageSize)
-        .orderBy(
-          'blogs.' + dto.sortBy + ' COLLATE "C"',
-          /*+ '::bytea'*/
-          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
-          'NULLS LAST',
-        )
-        .getMany();
-      return blogs;
-    }
-  }
-
   async isBlogExistsByName(dto: CreateBloggerDto): Promise<BlogEntity | null> {
     return await this.blogsRepo.findOneBy({ name: dto.name });
   }
@@ -148,19 +150,32 @@ export class BlogsORM
     return await this.blogsRepo
       .createQueryBuilder('b')
       .where('LOWER(b.name) like LOWER(:name)', { name: `%${searchNameTerm}%` })
+      .andWhere({ isBanned: false })
       .getCount();
   }
 
-  async countUsersBlogsBySearchname(searchNameTerm: string, userId: string) {
-    return await this.blogsRepo
-      .createQueryBuilder('b')
-      .where('LOWER(b.name) like LOWER(:name)', { name: `%${searchNameTerm}%` })
-      .andWhere('b.userId = :userId', { userId: userId })
+  async countUsersBlogsBySearchname(searchNameTerm: string, userId?: string) {
+    if (userId)
+      return await this.blogsRepo
+        .createQueryBuilder('b')
+        .where('LOWER(b.name) like LOWER(:name)', {
+          name: `%${searchNameTerm}%`,
+        })
+        .andWhere('b.userId = :userId', { userId: userId })
+        .andWhere({ isBanned: false })
+        .getCount();
+    else
+      return await this.blogsRepo
+        .createQueryBuilder('b')
+        .where('LOWER(b.name) like LOWER(:name)', {
+          name: `%${searchNameTerm}%`,
+        })
+        .andWhere({ isBanned: false })
 
-      .getCount();
+        .getCount();
   }
 
-  async bindBlogToUser(blogId: string, userId: string) {
+  async SA_bindBlogToUser(blogId: string, userId: string) {
     await this.blogsRepo.update({ id: blogId }, { user: { id: userId } });
     const blog = await this.blogsRepo.findOneBy({ id: blogId });
     console.log(blog.name, 'NOT IMPL BIND');
