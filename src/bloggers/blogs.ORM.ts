@@ -216,6 +216,7 @@ export class BlogsORM
       const result: any = {
         id: blog.id,
         name: blog.name,
+        description: blog.description,
         websiteUrl: blog.websiteUrl,
         createdAt: blog.createdAt,
         blogOwnerInfo: {

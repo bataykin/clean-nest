@@ -26,7 +26,7 @@ export class SAGetAllBloggersHandler
       sortBy = 'createdAt',
       sortDirection = 'desc',
       skipSize = +pageNumber > 1 ? +pageSize * (+pageNumber - 1) : 0,
-    } = query.dto;
+    } = dto;
     const blogsPaginationBLLdto = {
       searchNameTerm,
       pageNumber,

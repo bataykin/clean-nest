@@ -23,8 +23,10 @@ export class FindBlogHandler implements IQueryHandler<FindBlogQuery> {
       blog,
       'id',
       'name',
+      'description',
       'websiteUrl',
       'createdAt',
+      'isMembership',
     );
     return Promise.resolve(result);
   }
