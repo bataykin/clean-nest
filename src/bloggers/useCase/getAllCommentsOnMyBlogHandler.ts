@@ -68,6 +68,17 @@ export class GetAllCommentsOnMyBlogHandler
     const mappedComments =
       await this.likesRepo.mapArrayCommentEntitiesToResponse(allComments);
 
-    return mappedComments;
+    const docCount = await this.commentsRepo.countAllCommentsForAllUserBlogs(
+      userIdFromToken,
+    );
+
+    const result = {
+      pagesCount: Math.ceil(docCount / +pageSize),
+      page: +pageNumber,
+      pageSize: +pageSize,
+      totalCount: docCount,
+      items: mappedComments,
+    };
+    return result;
   }
 }

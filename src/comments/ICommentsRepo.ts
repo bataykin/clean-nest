@@ -27,4 +27,6 @@ export interface ICommentsRepo<GenericCommentType> {
   mapCommentsToResponse(
     allComments: CommentEntity[],
   ): Promise<CommentViewDto[]>;
+
+  countAllCommentsForAllUserBlogs(userId: string);
 }

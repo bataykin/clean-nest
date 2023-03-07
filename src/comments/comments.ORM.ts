@@ -19,11 +19,20 @@ export class CommentsORM
     super(CommentEntity, commentsRepo.manager, commentsRepo.queryRunner);
   }
 
+  async countAllCommentsForAllUserBlogs(userId: string) {
+    const res = await this.commentsRepo
+      .createQueryBuilder('coms')
+      .leftJoinAndSelect('coms.post', 'posts')
+      .leftJoinAndSelect('posts.blogger', 'blogs')
+      .where('blogs.user=:userId', { userId })
+      .getCount();
+    return res;
+  }
+
   async getAllCommentByBlog(
     userId: string,
     dto: BlogsPaginationDto,
   ): Promise<CommentEntity[]> {
-    console.log(userId);
     let comments = await this.commentsRepo
       .createQueryBuilder('comments')
       .leftJoin('comments.user', 'users')
