@@ -31,7 +31,9 @@ import { GetCommentsByPostCommand } from './useCase/getCommentsByPostHandler';
 import { CreateCommentByPostCommand } from './useCase/createCommentByPostHandler';
 import { SetLikeToPostCommand } from './useCase/setLikeToPostHandler';
 import { ContentDto } from '../comments/dto/contentDto';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('posts')
 export class PostsController {
   constructor(
