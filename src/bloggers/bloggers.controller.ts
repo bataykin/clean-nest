@@ -35,6 +35,7 @@ import { ChangePostByOtherUserInterceptor } from './interceptors/postMutationInt
 import { GetAllCommentsOnMyBlogCommand } from './useCase/getAllCommentsOnMyBlogHandler';
 import { BanUserByBlogDto } from './dto/banUserByBlogDto';
 import { BanUnbanUserByBloggerCommand } from './useCase/BanUnbanUserByBlogHandler';
+import { GetBannedUsersForBlogQuery } from './useCase/getBannedUsersForBlogHandler';
 
 @SkipThrottle()
 @Controller('blogger')
@@ -160,6 +161,20 @@ export class BloggersController {
     const accessToken = req.headers.authorization?.split(' ')[1];
     return this.commandBus.execute(
       new BanUnbanUserByBloggerCommand(userId, dto, accessToken),
+    );
+  }
+
+  @Get('users/blog/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async getBannedUsersForBlogId(
+    @Param('id', ParseUUIDPipe) blogId: string,
+    @Query() dto: BlogsPaginationDto,
+    @Request() req,
+  ) {
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    return this.queryBus.execute(
+      new GetBannedUsersForBlogQuery(blogId, dto, accessToken),
     );
   }
 }

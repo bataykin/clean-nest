@@ -1,15 +1,19 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BlogEntity } from './blogEntity';
+import { UserEntity } from '../../users/entity/user.entity';
 
 @Entity({ name: 'banned_users' })
 export class BannedUsersEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('uuid')
   userId!: string;
 
   @Column()
+  login!: string;
+
+  @Column('uuid')
   blogId!: string;
 
   @Column({ default: false })
@@ -23,4 +27,7 @@ export class BannedUsersEntity {
 
   @ManyToOne(() => BlogEntity, (blog) => blog.bannedUsers)
   blog: BlogEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.bannedUsers)
+  user: UserEntity;
 }

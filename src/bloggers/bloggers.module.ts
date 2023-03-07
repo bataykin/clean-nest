@@ -43,6 +43,7 @@ import { BanUnbanUserByBlogHandler } from './useCase/BanUnbanUserByBlogHandler';
 import { GetAllBlogsHandler } from './useCase/getAllBlogsPublic';
 import { IBannedUsersRepoToken } from './IBannedUsersRepo';
 import { BannedUsersORM } from './bannedUsers.ORM';
+import { GetBannedUsersForBlogHandler } from './useCase/getBannedUsersForBlogHandler';
 //import {BlogPostModule} from "../BlogPostModule/blogPost.module";
 
 const useBloggerServiceClass = () => {
@@ -70,6 +71,7 @@ const blogsRouteHandlers = [
 
   GetAllCommentsOnMyBlogHandler,
   BanUnbanUserByBlogHandler,
+  GetBannedUsersForBlogHandler,
 ];
 
 // let a = useServiceClassGeneric<BloggersMongoService, BloggersSQLService, BloggersORMService>(BloggersMongoService, BloggersSQLService, BloggersORMService)

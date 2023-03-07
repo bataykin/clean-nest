@@ -10,6 +10,7 @@ import { DeviceEntity } from '../../device/entities/device.entity';
 import { CommentEntity } from '../../comments/entities/comment.entity';
 import { LikeEntity } from '../../likes/entities/like.entity';
 import { BlogEntity } from '../../bloggers/entities/blogEntity';
+import { BannedUsersEntity } from '../../bloggers/entities/bannedUsersEntity';
 
 //
 // @Entity()
@@ -152,4 +153,7 @@ export class UserEntity {
   @OneToMany(() => BlogEntity, (blog) => blog.user)
   @JoinColumn({ referencedColumnName: 'userId' })
   blogs: BlogEntity[];
+
+  @OneToMany(() => BannedUsersEntity, (bannedUser) => bannedUser.user)
+  bannedUsers: BannedUsersEntity[];
 }
