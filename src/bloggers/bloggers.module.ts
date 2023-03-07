@@ -41,6 +41,8 @@ import { CommentsORM } from '../comments/comments.ORM';
 import { CommentEntity } from '../comments/entities/comment.entity';
 import { BanUnbanUserByBlogHandler } from './useCase/BanUnbanUserByBlogHandler';
 import { GetAllBlogsHandler } from './useCase/getAllBlogsPublic';
+import { IBannedUsersRepoToken } from './IBannedUsersRepo';
+import { BannedUsersORM } from './bannedUsers.ORM';
 //import {BlogPostModule} from "../BlogPostModule/blogPost.module";
 
 const useBloggerServiceClass = () => {
@@ -109,6 +111,14 @@ const blogsRouteHandlers = [
     {
       provide: IUsersRepoToken,
       useClass: useRepositoryClassGeneric(UsersORM, UsersORM, UsersORM),
+    },
+    {
+      provide: IBannedUsersRepoToken,
+      useClass: useRepositoryClassGeneric(
+        BannedUsersORM,
+        BannedUsersORM,
+        BannedUsersORM,
+      ),
     },
     {
       provide: ILikesRepoToken,

@@ -1,5 +1,13 @@
+import { IsBoolean, IsString, IsUUID, MinLength } from 'class-validator';
+
 export class BanUserByBlogDto {
-   isBanned: boolean
-   banReason: string
-   blogId: string
+  @IsBoolean()
+  isBanned: boolean;
+
+  @IsString()
+  @MinLength(20)
+  banReason: string;
+
+  @IsUUID()
+  blogId: string;
 }
