@@ -70,8 +70,8 @@ export class GetBannedUsersForBlogHandler
     );
     return {
       pagesCount: Math.ceil(docCount / pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
+      page: +pageNumber,
+      pageSize: +pageSize,
       totalCount: docCount,
       items: mappedUsers,
     };
