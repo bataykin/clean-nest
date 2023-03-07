@@ -34,6 +34,7 @@ import { passRecoveryDto } from './dto/passRecoveryDto';
 import { PasswordRecoveryCommand } from './useCase/passwordRecoveryHandler';
 import { RenewPasswordDto } from './dto/renewPasswordDto';
 import { RenewPasswordCommand } from './useCase/renewPasswordHandler';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -99,6 +100,7 @@ export class AuthController {
     // return this.authService.resendRegistrationEmail(email);
   }
 
+  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   // @UseGuards(RequestLimitGuard)
