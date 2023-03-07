@@ -47,6 +47,9 @@ import { LikesORM } from '../likes/likesORM';
 import { LikeEntity } from '../likes/entities/like.entity';
 import { SetLikeToPostHandler } from './useCase/setLikeToPostHandler';
 import { IsBlogExistConstraint } from '../bloggers/decorators/isBloggerExistsDecorator';
+import { IBannedUsersRepoToken } from '../bloggers/IBannedUsersRepo';
+import { BannedUsersORM } from '../bloggers/bannedUsers.ORM';
+import { BannedUsersEntity } from '../bloggers/entities/bannedUsersEntity';
 //import {BlogPostModule} from "../BlogPostModule/blogPost.module";
 
 export const usePostServiceClass = () => {
@@ -80,6 +83,7 @@ const PostRouteHandlers = [
       BlogEntity,
       UserEntity,
       LikeEntity,
+      BannedUsersEntity,
     ]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     JwtModule.register({
@@ -128,6 +132,14 @@ const PostRouteHandlers = [
     {
       provide: IBlogsRepoToken,
       useClass: useRepositoryClassGeneric(BlogsORM, BlogsORM, BlogsORM),
+    },
+    {
+      provide: IBannedUsersRepoToken,
+      useClass: useRepositoryClassGeneric(
+        BannedUsersORM,
+        BannedUsersORM,
+        BannedUsersORM,
+      ),
     },
     AuthService,
     // {
