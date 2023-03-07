@@ -36,6 +36,7 @@ import { RenewPasswordDto } from './dto/renewPasswordDto';
 import { RenewPasswordCommand } from './useCase/renewPasswordHandler';
 import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -100,7 +101,6 @@ export class AuthController {
     // return this.authService.resendRegistrationEmail(email);
   }
 
-  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   // @UseGuards(RequestLimitGuard)
