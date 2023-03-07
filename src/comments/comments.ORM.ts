@@ -72,8 +72,9 @@ export class CommentsORM
         .where('l.commentId = :commentId', { id })
         .andWhere('u.isBanned = false')
         .getRawOne();
+      res = likes;
     }
-    return Promise.resolve([]);
+    return Promise.resolve([res]);
   }
 
   async createComment(comment: CreateCommentDto) {
