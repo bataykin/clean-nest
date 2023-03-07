@@ -1,6 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BanUserByBlogDto } from '../dto/banUserByBlogDto';
-import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { IUsersRepo, IUsersRepoToken } from '../../users/IUsersRepo';
 import { UserEntity } from '../../users/entity/user.entity';
 import { IBlogsRepo, IBlogsRepoToken } from '../IBlogsRepo';
@@ -32,13 +37,21 @@ export class BanUnbanUserByBlogHandler
   ) {}
   async execute(command: BanUnbanUserByBloggerCommand): Promise<any> {
     const { userId, dto, accessToken } = command;
+    const retrievedUserFromToken = await this.authService.retrieveUser(
+      accessToken,
+    );
+    const userIdFromToken = retrievedUserFromToken.userId;
+    const isUserExist = await this.usersRepo.findById(userIdFromToken);
+    if (!isUserExist) {
+      throw new UnauthorizedException('unexpected user');
+    }
     const user = await this.usersRepo.findById(userId);
     if (!user) {
       throw new NotFoundException(`userId ${userId} not found`);
     }
     const blog = await this.blogsRepo.findBlogById(dto.blogId);
     const blogOwnerId = blog.userId;
-    if (userId !== blogOwnerId) {
+    if (userIdFromToken !== blogOwnerId) {
       throw new ForbiddenException(
         'try to update or delete the entity that was created by another user',
       );
