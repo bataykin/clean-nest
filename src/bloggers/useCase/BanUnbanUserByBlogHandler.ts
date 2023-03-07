@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BanUserByBlogDto } from '../dto/banUserByBlogDto';
-import { Inject } from '@nestjs/common';
+import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
 import { IUsersRepo, IUsersRepoToken } from '../../users/IUsersRepo';
 import { UserEntity } from '../../users/entity/user.entity';
 import { IBlogsRepo, IBlogsRepoToken } from '../IBlogsRepo';
@@ -32,6 +32,17 @@ export class BanUnbanUserByBlogHandler
   ) {}
   async execute(command: BanUnbanUserByBloggerCommand): Promise<any> {
     const { userId, dto, accessToken } = command;
+    const user = await this.usersRepo.findById(userId);
+    if (!user) {
+      throw new NotFoundException(`userId ${userId} not found`);
+    }
+    const blog = await this.blogsRepo.findBlogById(dto.blogId);
+    const blogOwnerId = blog.userId;
+    if (userId !== blogOwnerId) {
+      throw new ForbiddenException(
+        'try to update or delete the entity that was created by another user',
+      );
+    }
     await this.bannedUsersRepo.setBanStatus(userId, dto);
     return Promise.resolve(undefined);
   }
