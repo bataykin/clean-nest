@@ -1,7 +1,12 @@
 import { BlogsPaginationDto } from '../dto/blogsPaginationDto';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AuthService } from '../../auth/authService';
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { IUsersRepo, IUsersRepoToken } from '../../users/IUsersRepo';
 import { UserEntity } from '../../users/entity/user.entity';
 import { IBlogsRepo, IBlogsRepoToken } from '../IBlogsRepo';
@@ -39,6 +44,17 @@ export class GetBannedUsersForBlogHandler
     const isUserExist = await this.usersRepo.findById(userIdFromToken);
     if (!isUserExist) {
       throw new UnauthorizedException('unexpected user');
+    }
+
+    const blog = await this.blogsRepo.findBlogById(blogId);
+    if (!blog) {
+      throw new NotFoundException(`blogId ${blogId} not found`);
+    }
+    const blogOwnerId = blog.userId;
+    if (userIdFromToken !== blogOwnerId) {
+      throw new ForbiddenException(
+        'try to get the entity that was created by another user',
+      );
     }
     const {
       searchNameTerm = '',
