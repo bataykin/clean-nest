@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BannedUsersEntity } from './entities/bannedUsersEntity';
 import { IBannedUsersRepo } from './IBannedUsersRepo';
 import { BanUserByBlogDto } from './dto/banUserByBlogDto';
-import { CreateUserPaginatedDto } from '../users/dto/create.user.paginated.dto';
 import { UserEntity } from '../users/entity/user.entity';
 
 export class BannedUsersORM
@@ -75,16 +74,18 @@ export class BannedUsersORM
 
   async getBannedUsersForBlogPaginated(
     blogId: string,
-    dto: CreateUserPaginatedDto,
+    dto: any,
   ): Promise<BannedUsersEntity[] | null> {
     // return await this.bannedUsersRepo.findBy({ blogId: blogId });
-    if (dto.sortBy === 'createdAt') {
+    console.log(dto);
+
+    if (dto.sortBy === `createdAt`) {
       const users = await this.bannedUsersRepo
         .createQueryBuilder('users')
-        .where('LOWER(users.login) like LOWER(:login)', {
-          login: `%${dto.searchLoginTerm}%`,
+        .where(`LOWER(users.login) like LOWER(:login)`, {
+          login: `%${dto.searchNameTerm}%`,
         })
-        .andWhere('users.blogId =:blogId', { blogId })
+        .andWhere(`users.blogId =:blogId`, { blogId })
         .skip(dto.skipSize)
         .take(dto.pageSize)
         .orderBy(
@@ -93,11 +94,11 @@ export class BannedUsersORM
           // THEN "users." || "${dto.sortBy}" || "::bytea"
           // ELSE "users." || "${dto.sortBy}"
           // `
-          'users.' + dto.sortBy,
+          'users.banDate' /*+ dto.sortBy*/,
           // + ' COLLATE "C"'
           /*+ '::bytea'*/
-          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
-          'NULLS LAST',
+          dto.sortDirection === `asc` ? `ASC` : `DESC`,
+          `NULLS LAST`,
         )
         .getMany();
 
@@ -105,11 +106,10 @@ export class BannedUsersORM
     }
     const users = await this.bannedUsersRepo
       .createQueryBuilder('users')
-      .where('LOWER(users.login) like LOWER(:login)', {
+      .where(`LOWER(users.login) like LOWER(:login)`, {
         login: `%${dto.searchLoginTerm}%`,
       })
-      .andWhere('users.blogId =:blogId', { blogId })
-
+      .andWhere(`users.blogId =:blogId`, { blogId })
       .skip(dto.skipSize)
       .take(dto.pageSize)
       .orderBy(
@@ -118,10 +118,10 @@ export class BannedUsersORM
         // THEN "users." || "${dto.sortBy}" || "::bytea"
         // ELSE "users." || "${dto.sortBy}"
         // `
-        'users.' + dto.sortBy + ' COLLATE "C"',
+        'users.' + dto.sortBy + ` COLLATE "C"`,
         /*+ '::bytea'*/
-        dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
-        'NULLS LAST',
+        dto.sortDirection === `asc` ? `ASC` : `DESC`,
+        `NULLS LAST`,
       )
       .getMany();
     return users;
