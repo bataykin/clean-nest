@@ -255,6 +255,7 @@ export class LikesORM
     };
     const res = {
       ...rest,
+      id: comment.id,
       likesInfo,
     };
     return res;
