@@ -107,7 +107,7 @@ export class BannedUsersORM
     const users = await this.bannedUsersRepo
       .createQueryBuilder('users')
       .where(`LOWER(users.login) like LOWER(:login)`, {
-        login: `%${dto.searchLoginTerm}%`,
+        login: `%${dto.searchNameTerm}%`,
       })
       .andWhere(`users.blogId =:blogId`, { blogId })
       .skip(dto.skipSize)
