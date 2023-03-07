@@ -48,21 +48,25 @@ export class BannedUsersORM
       userId,
       dto.blogId,
     );
-    if (!wasBannedInThisBlog) {
-      if (dto.isBanned) {
-        const res = await this.bannedUsersRepo.insert(bannedUser);
-        return;
-      }
-    } else {
-      const res = await this.bannedUsersRepo.update(
-        { userId: userId, blogId: dto.blogId },
-        {
-          isBanned: dto.isBanned,
-          banReason: dto.isBanned ? dto.banReason : null,
-          banDate: dto.isBanned ? new Date() : null,
-        },
-      );
+    if (!wasBannedInThisBlog && dto.isBanned) {
+      const res = await this.bannedUsersRepo.insert(bannedUser);
       return;
+    } else {
+      if (dto.isBanned == true) {
+        const res = await this.bannedUsersRepo.update(
+          { userId: userId, blogId: dto.blogId },
+          {
+            banReason: dto.banReason,
+            banDate: new Date(),
+          },
+        );
+        return;
+      } else {
+        await this.bannedUsersRepo.delete({
+          userId: userId,
+          blogId: dto.blogId,
+        });
+      }
     }
   }
 
