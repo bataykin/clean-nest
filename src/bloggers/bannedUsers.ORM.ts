@@ -77,7 +77,54 @@ export class BannedUsersORM
     blogId: string,
     dto: CreateUserPaginatedDto,
   ): Promise<BannedUsersEntity[] | null> {
-    return await this.bannedUsersRepo.findBy({ blogId: blogId });
+    // return await this.bannedUsersRepo.findBy({ blogId: blogId });
+    if (dto.sortBy === 'createdAt') {
+      const users = await this.bannedUsersRepo
+        .createQueryBuilder('users')
+        .where('LOWER(users.login) like LOWER(:login)', {
+          login: `%${dto.searchLoginTerm}%`,
+        })
+        .andWhere('users.blogId =:blogId', { blogId })
+        .skip(dto.skipSize)
+        .take(dto.pageSize)
+        .orderBy(
+          //     `CASE
+          // WHEN "${dto.sortBy}" = "createdAt"
+          // THEN "users." || "${dto.sortBy}" || "::bytea"
+          // ELSE "users." || "${dto.sortBy}"
+          // `
+          'users.' + dto.sortBy,
+          // + ' COLLATE "C"'
+          /*+ '::bytea'*/
+          dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        )
+        .getMany();
+
+      return users;
+    }
+    const users = await this.bannedUsersRepo
+      .createQueryBuilder('users')
+      .where('LOWER(users.login) like LOWER(:login)', {
+        login: `%${dto.searchLoginTerm}%`,
+      })
+      .andWhere('users.blogId =:blogId', { blogId })
+
+      .skip(dto.skipSize)
+      .take(dto.pageSize)
+      .orderBy(
+        //     `CASE
+        // WHEN "${dto.sortBy}" = "createdAt"
+        // THEN "users." || "${dto.sortBy}" || "::bytea"
+        // ELSE "users." || "${dto.sortBy}"
+        // `
+        'users.' + dto.sortBy + ' COLLATE "C"',
+        /*+ '::bytea'*/
+        dto.sortDirection === 'asc' ? 'ASC' : 'DESC',
+        'NULLS LAST',
+      )
+      .getMany();
+    return users;
   }
 
   async mapBannedUserEntity(bannedUser: BannedUsersEntity): Promise<any> {
