@@ -86,9 +86,12 @@ export class CreateCommentByPostHandler
     const createdComment = await this.commentsRepo.createComment(comment);
     const { userId, userLogin, createdAt, id } = createdComment;
     const res = {
+      id,
       content,
-      userId,
-      userLogin,
+      commentatorInfo: {
+        userId,
+        userLogin,
+      },
       createdAt,
       likesInfo: {
         likesCount: 0,

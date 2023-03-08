@@ -46,7 +46,7 @@ export const getConfiguration = () => {
         autoLoadEntities: true,
         synchronize: true,
         entities: [BlogEntity, DeviceEntity],
-        logging: false,
+        logging: ['error'],
 
         migrations: [
           /*...*/

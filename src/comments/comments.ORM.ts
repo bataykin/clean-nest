@@ -5,8 +5,7 @@ import { ICommentsRepo } from './ICommentsRepo';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { PaginationCommentsDto } from './dto/paginationCommentsDto';
 import { BlogsPaginationDto } from '../bloggers/dto/blogsPaginationDto';
-import { CommentViewDto } from './dto/commentViewDto';
-import { LikeEntity } from '../likes/entities/like.entity';
+import { CommentViewDtoForBlogger } from './dto/commentViewDtoForBlogger';
 
 export class CommentsORM
   extends Repository<CommentEntity>
@@ -35,8 +34,8 @@ export class CommentsORM
   ): Promise<CommentEntity[]> {
     let comments = await this.commentsRepo
       .createQueryBuilder('comments')
-      .leftJoin('comments.user', 'users')
-      .leftJoin('users.blogs', 'blogs')
+      .leftJoinAndSelect('comments.user', 'users')
+      .leftJoinAndSelect('users.blogs', 'blogs')
       .where('blogs.userId = :userId', { userId })
       .andWhere('users.isBanned = false')
       .skip(dto.skipSize)
@@ -52,38 +51,61 @@ export class CommentsORM
 
   async mapCommentsToResponse(
     allComments: CommentEntity[],
-  ): Promise<CommentViewDto[]> {
+  ): Promise<CommentViewDtoForBlogger[]> {
     const result = [];
-    let res: CommentViewDto;
+    let res: CommentViewDtoForBlogger;
     for await (let comment of allComments) {
       let { id, content, createdAt, userId, userLogin, postId } = comment;
-      let likes = await this.manager
-        .createQueryBuilder()
-        .select()
-        .from(LikeEntity, 'l')
-        .leftJoin('users', 'u', 'l.userId = u.id')
-        .addSelect(
-          `
-            COALESCE( SUM( CASE
-                    WHEN l.reaction = 'Dislike' THEN 1
-                    ELSE 0 END ), 0 )   
-            `,
-          'dislikesCount',
-        )
-        .addSelect(
-          `
-            COALESCE( SUM( CASE
-                WHEN l.reaction = 'Like' THEN 1
-                ELSE 0 END ), 0)
-            `,
-          'likesCount',
-        )
-        .where('l.commentId = :commentId', { id })
-        .andWhere('u.isBanned = false')
-        .getRawOne();
-      res = likes;
+
+      const post = await this.createQueryBuilder('c')
+        .leftJoinAndSelect('c.post', 'p')
+        .where('c.id =:commentId', { commentId: id })
+        .getOne();
+
+      res = {
+        id: id,
+        content: content,
+        createdAt: createdAt,
+        commentatorInfo: {
+          userId: userId,
+          userLogin: userLogin,
+        },
+        postInfo: {
+          id: postId,
+          title: post.post.title,
+          blogId: post.post.blogId,
+          blogName: post.post.blogName,
+        },
+      };
+      result.push(res);
+
+      // let likes = await this.manager
+      //   .createQueryBuilder()
+      //   .select()
+      //   .from(LikeEntity, 'l')
+      //   .leftJoin('users', 'u', 'l.userId = u.id')
+      //   .addSelect(
+      //     `
+      //       COALESCE( SUM( CASE
+      //               WHEN l.reaction = 'Dislike' THEN 1
+      //               ELSE 0 END ), 0 )
+      //       `,
+      //     'dislikesCount',
+      //   )
+      //   .addSelect(
+      //     `
+      //       COALESCE( SUM( CASE
+      //           WHEN l.reaction = 'Like' THEN 1
+      //           ELSE 0 END ), 0)
+      //       `,
+      //     'likesCount',
+      //   )
+      //   .where('l.commentId = :commentId', { commentId: id })
+      //   .andWhere('u.isBanned = false')
+      //   .getRawOne();
+      // res = likes;
     }
-    return Promise.resolve([res]);
+    return Promise.resolve(result);
   }
 
   async createComment(comment: CreateCommentDto) {

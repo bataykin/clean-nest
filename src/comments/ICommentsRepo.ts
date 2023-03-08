@@ -2,7 +2,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { PaginationCommentsDto } from './dto/paginationCommentsDto';
 import { CommentEntity } from './entities/comment.entity';
 import { BlogsPaginationDto } from '../bloggers/dto/blogsPaginationDto';
-import { CommentViewDto } from './dto/commentViewDto';
+import { CommentViewDtoForBlogger } from './dto/commentViewDtoForBlogger';
 
 export const ICommentsRepoToken = Symbol('ICommentsRepoToken');
 
@@ -26,7 +26,7 @@ export interface ICommentsRepo<GenericCommentType> {
 
   mapCommentsToResponse(
     allComments: CommentEntity[],
-  ): Promise<CommentViewDto[]>;
+  ): Promise<CommentViewDtoForBlogger[]>;
 
   countAllCommentsForAllUserBlogs(userId: string);
 }

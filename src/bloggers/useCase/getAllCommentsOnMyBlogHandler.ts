@@ -45,7 +45,6 @@ export class GetAllCommentsOnMyBlogHandler
     if (isBanned) throw new UnauthorizedException('user is banned, sorry))');
 
     const {
-      searchNameTerm = '',
       pageNumber = 1,
       pageSize = 10,
       sortBy = 'createdAt',
@@ -53,7 +52,6 @@ export class GetAllCommentsOnMyBlogHandler
       skipSize = +pageNumber > 1 ? +pageSize * (+pageNumber - 1) : 0,
     } = query.dto;
     const commentsPaginationBLLdto = {
-      searchNameTerm,
       pageNumber,
       pageSize,
       sortBy,
@@ -65,8 +63,15 @@ export class GetAllCommentsOnMyBlogHandler
       userIdFromToken,
       commentsPaginationBLLdto,
     );
-    const mappedComments =
-      await this.likesRepo.mapArrayCommentEntitiesToResponse(allComments);
+    // console.log('getAllCommentByBlog');
+    // console.log(allComments);
+
+    // const mappedComments =
+    //   await this.likesRepo.mapArrayCommentEntitiesToResponse(allComments);
+    const mappedComments = await this.commentsRepo.mapCommentsToResponse(
+      allComments,
+    );
+    // console.log(mappedComments);
 
     const docCount = await this.commentsRepo.countAllCommentsForAllUserBlogs(
       userIdFromToken,
