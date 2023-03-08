@@ -84,6 +84,7 @@ export class GetAllCommentsOnMyBlogHandler
       totalCount: docCount,
       items: mappedComments,
     };
+    // console.log(result);
     return result;
   }
 }

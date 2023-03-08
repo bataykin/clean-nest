@@ -32,12 +32,15 @@ export class CommentsORM
     userId: string,
     dto: BlogsPaginationDto,
   ): Promise<CommentEntity[]> {
+    // console.log(
+    //   'XXXXXXXXXXXXXXXXXXXXX - getAllCommentByBlog start query - XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    // );
     let comments = await this.commentsRepo
       .createQueryBuilder('comments')
-      .leftJoinAndSelect('comments.user', 'users')
-      .leftJoinAndSelect('users.blogs', 'blogs')
+      .leftJoin('comments.post', 'posts')
+      .leftJoin('posts.blogger', 'blogs')
       .where('blogs.userId = :userId', { userId })
-      .andWhere('users.isBanned = false')
+      // .andWhere('users.isBanned = false')
       .skip(dto.skipSize)
       .take(dto.pageSize)
       .orderBy(
@@ -46,12 +49,15 @@ export class CommentsORM
         'NULLS LAST',
       )
       .getMany();
+    // console.log(
+    //   'YYYYYYYYYYYYYYYYYYYYY - getAllCommentByBlog end query - YYYYYYYYYYYYYYYYYYYYYYYYYYY',
+    // );
+
+    // console.log(comments);
     return comments;
   }
 
-  async mapCommentsToResponse(
-    allComments: CommentEntity[],
-  ): Promise<CommentViewDtoForBlogger[]> {
+  async mapCommentsToResponse(allComments: CommentEntity[]) {
     const result = [];
     let res: CommentViewDtoForBlogger;
     for await (let comment of allComments) {
@@ -105,7 +111,7 @@ export class CommentsORM
       //   .getRawOne();
       // res = likes;
     }
-    return Promise.resolve(result);
+    return result;
   }
 
   async createComment(comment: CreateCommentDto) {
