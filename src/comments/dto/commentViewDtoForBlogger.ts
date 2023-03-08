@@ -1,3 +1,5 @@
+import { LikeStatusEnum } from '../comment.schema';
+
 export class CommentViewDtoForBlogger {
   id: string;
 
@@ -15,5 +17,11 @@ export class CommentViewDtoForBlogger {
     title: string;
     blogId: string;
     blogName: string;
+  };
+
+  likesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: LikeStatusEnum;
   };
 }

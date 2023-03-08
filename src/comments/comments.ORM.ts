@@ -6,6 +6,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { PaginationCommentsDto } from './dto/paginationCommentsDto';
 import { BlogsPaginationDto } from '../bloggers/dto/blogsPaginationDto';
 import { CommentViewDtoForBlogger } from './dto/commentViewDtoForBlogger';
+import { LikeStatusEnum } from './comment.schema';
 
 export class CommentsORM
   extends Repository<CommentEntity>
@@ -81,6 +82,11 @@ export class CommentsORM
           title: post.post.title,
           blogId: post.post.blogId,
           blogName: post.post.blogName,
+        },
+        likesInfo: {
+          likesCount: 0,
+          dislikesCount: 0,
+          myStatus: LikeStatusEnum.None,
         },
       };
       result.push(res);
